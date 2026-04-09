@@ -1,0 +1,2 @@
+-r backend/app/requirements.txt
+-r backend/knowledge/requirements.txt

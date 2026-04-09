@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+python-dotenv
+pydantic
+pydantic-settings
+pymysql
+DBUtils
+langchain
+langchain-community
+langchain-core
+SQLAlchemy
+openai
+httpx
+openai-agents
+pystun3

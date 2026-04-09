@@ -1,0 +1,37 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Backend services for the multi-agent after-sale project"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "aiofiles",
+    "beautifulsoup4",
+    "dbutils",
+    "fastapi",
+    "httpx",
+    "jieba",
+    "langchain",
+    "langchain-chroma",
+    "langchain-community",
+    "langchain-core",
+    "langchain-openai",
+    "langchain-text-splitters",
+    "markdown",
+    "markdownify",
+    "openai",
+    "openai-agents",
+    "pydantic",
+    "pydantic-settings",
+    "pymysql",
+    "pystun3",
+    "python-dotenv",
+    "python-multipart",
+    "requests",
+    "scikit-learn",
+    "sqlalchemy",
+    "unstructured",
+    "uvicorn",
+]
+
+[tool.uv]
+package = false

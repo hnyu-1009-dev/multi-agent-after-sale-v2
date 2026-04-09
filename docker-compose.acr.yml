@@ -1,0 +1,95 @@
+name: after-sale-next
+
+services:
+  core-db:
+    image: ${MYSQL_IMAGE:?set MYSQL_IMAGE in deploy/env/images.env}
+    restart: unless-stopped
+    env_file:
+      - ./deploy/env/db.env
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=+08:00
+      - --skip-name-resolve
+    volumes:
+      - core_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      - app_mesh
+    ports:
+      - "127.0.0.1:3307:3306"
+
+  core-api:
+    image: ${CORE_API_IMAGE:?set CORE_API_IMAGE in deploy/env/images.env}
+    restart: unless-stopped
+    env_file:
+      - ./deploy/env/core-api.env
+    depends_on:
+      core-db:
+        condition: service_healthy
+      retrieval-api:
+        condition: service_started
+    volumes:
+      - ./backend/app/user_memories:/workspace/backend/app/user_memories:ro
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/docs', timeout=5).read()"]
+      interval: 15s
+      timeout: 10s
+      retries: 8
+      start_period: 40s
+    networks:
+      - app_mesh
+
+  retrieval-api:
+    image: ${KB_API_IMAGE:?set KB_API_IMAGE in deploy/env/images.env}
+    restart: unless-stopped
+    env_file:
+      - ./deploy/env/kb-api.env
+    volumes:
+      - kb_vector_data:/srv/knowledge/vector-store
+      - kb_workspace:/srv/knowledge/workspace
+    expose:
+      - "8081"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8081/docs', timeout=5).read()"]
+      interval: 15s
+      timeout: 10s
+      retries: 8
+      start_period: 35s
+    networks:
+      - app_mesh
+
+  edge-web:
+    image: ${EDGE_WEB_IMAGE:?set EDGE_WEB_IMAGE in deploy/env/images.env}
+    restart: unless-stopped
+    depends_on:
+      core-api:
+        condition: service_healthy
+      retrieval-api:
+        condition: service_healthy
+    ports:
+      - "${PUBLIC_HTTP_PORT:-8088}:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/ || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - app_mesh
+
+volumes:
+  core_db_data:
+  kb_vector_data:
+  kb_workspace:
+
+networks:
+  app_mesh:
+    driver: bridge

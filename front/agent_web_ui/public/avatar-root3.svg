@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">用户头像三</title>
+  <desc id="desc">固定用户头像三</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4bb82" />
+      <stop offset="100%" stop-color="#8a6737" />
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="32" fill="url(#bg)" />
+  <circle cx="64" cy="46" r="21" fill="#17283f" fill-opacity="0.95" />
+  <path d="M30 106c5-18 19-30 34-30s29 12 34 30" fill="#17283f" fill-opacity="0.95" />
+  <path d="M49 39c4-8 12-12 15-12 5 0 11 3 15 12" fill="none" stroke="#f6f2ea" stroke-width="6" stroke-linecap="round" />
+</svg>
